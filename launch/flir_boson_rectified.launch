@@ -10,7 +10,7 @@
   <!-- valid values are 30.0 or 60.0 for Bosons -->
   <arg name="frame_rate" default="60.0"/>
 
-  <!-- valid values are RAW16 or YUV -->
+  <!-- valid values are RAW16, AGC, or YUV -->
   <arg name="video_mode" default="YUV"/>
 
   <!-- valid values are TRUE or FALSE -->
