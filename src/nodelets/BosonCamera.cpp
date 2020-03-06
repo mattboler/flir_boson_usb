@@ -71,6 +71,10 @@ void BosonCamera::onInit()
   {
     video_mode = YUV;
   }
+  else if (video_mode_str == "AGC")
+  {
+    video_mode = AGC;
+  }
   else
   {
     exit = true;
@@ -189,8 +193,8 @@ bool BosonCamera::openCamera()
 
   struct v4l2_format format;
 
-  // Two different FORMAT modes, 8 bits vs RAW16
-  if (video_mode == RAW16)
+  // Three different FORMAT modes, 8 bits vs RAW16
+  if (video_mode == RAW16 || video_mode == AGC)
   {
     // I am requiring thermal 16 bits mode
     format.fmt.pix.pixelformat = V4L2_PIX_FMT_Y16;
@@ -348,8 +352,18 @@ void BosonCamera::captureAndPublish(const ros::TimerEvent& evt)
     ROS_ERROR("flir_boson_usb - VIDIOC_DQBUF error. Failed to dequeue the image buffer.");
     return;
   }
-
+  
   if (video_mode == RAW16)
+  {
+    cv_img.image = thermal16;
+    cv_img.header.stamp = ros::Time::now();
+    cv_img.header.frame_id = frame_id;
+    cv_img.encoding = "mono16";
+    pub_image = cv_img.toImageMsg();
+    ci->header.stamp = pub_image->header.stamp;
+    image_pub.publish(pub_image, ci);
+  }
+  else if (video_mode == AGC)
   {
     // -----------------------------
     // RAW16 DATA
