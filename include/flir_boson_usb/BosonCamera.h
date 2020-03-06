@@ -53,7 +53,8 @@ namespace flir_boson_usb
 enum Encoding
 {
   YUV = 0,
-  RAW16 = 1
+  RAW16 = 1,
+  AGC = 2
 };
 
 enum SensorTypes
